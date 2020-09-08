@@ -13,10 +13,10 @@ function draw() {
   background(100);
 }
 
-function mouseReleased(){
-  if (song1.isPlaying()){
+function mouseReleased() {
+  if (song1.isPlaying()) {
     song1.pause();
-  }else{
+  } else {
     song1.loop();
   }
 }
