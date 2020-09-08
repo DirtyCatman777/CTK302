@@ -18,7 +18,6 @@ img4 = loadImage("Assets/Gothem.jpg");
 
 function draw() {
 background("#66ccff");
-    //text(mouseX + " , " + mouseY, 50, 30) ;
 
 fill('White');
 textFont(f);
