@@ -32,7 +32,7 @@ function draw() {
   var e = lerpColor(pi, bb, t);
 
   background("#66ccff");
-  text(mouseX + " , " + mouseY, 55, 30);
+  //text(mouseX + " , " + mouseY, 55, 30);
 
   fill('White');
   textFont(f);
@@ -42,11 +42,13 @@ function draw() {
   stroke('White');
   line(335, 67, 660, 67);
 
+  noStroke();
   fill('White');
   textFont(f);
   textSize(22);
   text("Not necessarily a hero, but a character all the same. Dirty Catman is my username \n that I use on pretty much everything. It has several different meanings to me. \n The 'Dirty' comes from Minecraft because I use it the most out of any other material.\nThe 'Catman' is a mixture of two things. First is 'Cat' because I love cats.\nThey are my favorite animal. And the 'man' portion stems from Batman who is my favorite super hero.", width / 2, 100);
 
+  stroke('White');
   line(15, 225, 985, 225);
 
   if (mouseIsPressed) {
