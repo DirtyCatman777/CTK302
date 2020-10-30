@@ -12,6 +12,7 @@ function setup() {
 
 function draw() {
   background("grey");
+  
   cars.push(new Car());
 
   for (let i = 0; i < cars.length; i++) {

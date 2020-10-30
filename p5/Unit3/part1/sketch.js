@@ -18,6 +18,7 @@ function draw() {
     cars[i].display();
     cars[i].move();
 
+    //delets car after reaching a distance
     if (cars[i].a <= 0) {
       cars.splice(i, 1);
     }
