@@ -1,11 +1,7 @@
 //add music and or sound effects
 //add particle background
-//make buttons fade in and out with opacity
 //make drops spawn from cloud
-//animate cloud when spawns drop (rose might show us animation)
-//game difficulty comes from increase in drop frequency, as time increases velocity of cloud increases, drop frequency is tied to cloud velocity.
-//display "score" which is how many drops were destryed by the umbrella at the lose screen
-//add other buttons for navigation
+//to increase difficulty make cloud move faster with each drop destroyed and shorten timer before another drop spawns
 
 let drops = [];
 let f1, f2;
@@ -22,6 +18,8 @@ let c2ButtColor;
 let c3ButtColor;
 let x = 0;
 var direction = "right";
+var score = 0;
+let rains = [];
 
 function setup() {
   createCanvas(windowWidth - 5, windowHeight - 5);
@@ -30,6 +28,7 @@ function setup() {
 
   textAlign(CENTER);
   rectMode(CENTER);
+  noStroke();
 
   f1 = loadFont("assets/PoiretOne-Regular.ttf");
   f2 = loadFont("assets/IndieFlower-Regular.ttf");
@@ -37,7 +36,6 @@ function setup() {
   c0ButtColor = color("#33ccff");
   c2ButtColor = color("#42d6ff");
   c3ButtColor = color("#2192b8");
-  stroke("white");
 
   bg = loadImage("assets/Background.png");
   u = loadImage("assets/Umbrella.png");
@@ -59,6 +57,17 @@ function draw() {
   switch (state) {
     case 0:
       background("#33ccff");
+
+      //background rain
+      rains.push(new Rain());
+      for (let i = 0; i < rains.length; i++) {
+        rains[i].display();
+        rains[i].move();
+        if (rains[i].a <= 0) {
+          rains.splice(i, 1);
+        }
+      }
+
       imageMode(CENTER);
       image(u, width / 2 + 350, height / 2 - 150);
       fill("white");
@@ -72,11 +81,22 @@ function draw() {
 
     case 1:
       game();
-      timer++;
+      //background rain
+      rains.push(new Rain());
+      for (let i = 0; i < rains.length; i++) {
+        rains[i].display();
+        rains[i].move();
+        if (rains[i].a <= 0) {
+          rains.splice(i, 1);
+        }
+      }
       break;
 
     case 2:
+      clear();
       background("#42d6ff");
+      textAlign(CENTER);
+      textSize(70);
       fill("white");
       textFont(f1);
       text("You stayed dry!", width / 2, height / 2);
@@ -85,10 +105,28 @@ function draw() {
       rect(width / 2, height / 2 + 83, 355, 90, 50);
       fill("white");
       text("play again", width / 2, height / 2 + 100);
+      squareColor = color("white");
+      squareColor.setAlpha(200 + 200 * sin(millis() / 500));
+      fill(squareColor);
+      text("High Score: " + score, width/2, height-120);
       break;
 
     case 3:
+      clear();
       background("#2192b8");
+
+      //background rain
+      rains.push(new Rain());
+      for (let i = 0; i < rains.length; i++) {
+        rains[i].display();
+        rains[i].move();
+        if (rains[i].a <= 0) {
+          rains.splice(i, 1);
+        }
+      }
+
+      textAlign(CENTER);
+      textSize(70);
       fill("white");
       textFont(f2);
       text("You got wet!", width / 2, height / 2 - 30);
@@ -97,11 +135,12 @@ function draw() {
       rect(width / 2, height / 2 + 87, 350, 100, 50);
       fill("white");
       text("Try Again?", width / 2, height / 2 + 100);
+      squareColor = color("white");
+      squareColor.setAlpha(200 + 200 * sin(millis() / 500));
+      fill(squareColor);
+      text("High Score: " + score, width/2, height-120);
       break;
   }
-  //mouse reference (delete when done)
-  fill('white');
-  text(mouseX + ',' + mouseY, 150, 80);
 
   //button color change
   //State 0
@@ -127,20 +166,10 @@ function draw() {
 function game() {
   imageMode(CORNER);
   image(bg, 0, 0, width, height);
-  // display and move drops
-  if (timer > 3 * 60) {
-    for (let i = 0; i < drops.length; i++) {
-      drops[i].display();
-      drops[i].move();
-      //destroy enemie on collision with umbrella
-      if (drops[i].pos.dist(umbPos) < 100) {
-        drops.splice(i, 1);
-      }
-    }
-  }
+  timer++;
 
   //this wins game when umbrella blocks all the drops
-  if (drops.length == 0) {
+  if (score == 10) {
     state = 2;
   }
 
@@ -163,12 +192,36 @@ function game() {
   if (x < 100) {
     direction = "right";
   }
+  textAlign(LEFT);
+  textSize(35);
+  fill('white');
+  text("Score: " + score, 50, 60);
+
+  // display and move drops
+  if (timer > 2 * 60) {
+    image(cl2, x, height / 2 - 250, 235, 159);
+    for (let i = 0; i < drops.length; i++) {
+      drops[i].display();
+      drops[i].move();
+      //destroy enemie on collision with umbrella
+      if (drops[i].pos.dist(umbPos) < 100) {
+        drops.splice(i, 1);
+        drops.push(new Drop());
+        timer = 0;
+        score++;
+      }
+    }
+  }
 }
 
 //resetting the game
 function resetGame() {
   drops = [];
+  for (let i = 0; i < maxCars; i++) {
+    drops.push(new Drop());
+  }
   timer = 0;
+  score = 0;
 }
 
 //player character movement
@@ -204,7 +257,7 @@ class Drop {
   // constructor and attributes of drops
   constructor() {
     //where drops spawn
-    this.pos = createVector(random(25, windowWidth - 25), 100);
+    this.pos = createVector(random(50,width-50), 0);
     //how fast drops are going
     this.vel = createVector(0, 8);
   }
@@ -217,7 +270,31 @@ class Drop {
   //moving the enemies
   move() {
     this.pos.add(this.vel);
-    // if (this.pos.y > height) state = 3;
+
+    //this loses the game if a drop hits the ground
+    if (this.pos.y > height) state = 3;
   }
 
+}
+
+class Rain {
+  constructor() {
+    //attributes
+    this.pos = createVector(random(5,windowWidth-5), -10);
+    this.vel = createVector(0, random(8, 4));
+    this.r = 255 //random(255) ;
+    this.g = 255 //random(255) ;
+    this.b = 255 //random(255) ;
+    this.a = random(200, 555);
+  }
+  //methods
+  display() {
+    fill(this.r, this.g, this.b, this.a);
+    ellipse(this.pos.x, this.pos.y, 5,20);
+  }
+
+  move() {
+    this.pos.add(this.vel);
+    this.a = this.a - 5;
+  }
 }
