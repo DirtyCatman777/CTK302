@@ -40,10 +40,10 @@ function setup() {
   bg = loadImage("assets/Background.png");
   u = loadImage("assets/Umbrella.png");
   b = loadImage("assets/Drop.png");
-  cl1 = loadImage("assets/HappyCloud.png")
-  cl2 = loadImage("assets/ConcentrateCloud.png")
-  cl3 = loadImage("assets/GoodCloud.png")
-  cl4 = loadImage("assets/SadCloud.png")
+  cl1 = loadImage("assets/HappyCloud.png");
+  cl2 = loadImage("assets/ConcentrateCloud.png");
+  cl3 = loadImage("assets/GoodCloud.png");
+  cl4 = loadImage("assets/SadCloud.png");
 
 
   // // Adding Drops to array
